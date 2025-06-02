@@ -12,18 +12,6 @@ const User = mongoose.model('User', UserSchema, 'userInfo');
 const emailjs = require('emailjs-com');
 
 
-// Authentication middleware
-const authMiddleware = (req, res, next) => {
-  if (req.session && req.session.user) {
-    return next();
-  } else {
-    // Create a friendly unauthorized page
-    return res.render('unauthorized', { 
-      title: 'Access Denied',
-      message: 'Please log in to access this page'
-    });
-  }
-};
 
 const noteSchema = new mongoose.Schema({
   location: String,
@@ -159,6 +147,7 @@ router.get('/route/dashboard', (req, res) => {
         res.render('dashboard', { user: req.session.user });
     } else {
         console.log('No user in session, redirecting to login');
+        // Instead of showing "Unauthorized User", redirect to login page with a message
         res.redirect('/route/login?error=Please%20login%20to%20access%20the%20dashboard');
     }
 });
@@ -204,10 +193,7 @@ router.post('/post', async (req, res) => {
 // API endpoint for AJAX search
 router.get('/api/search', async (req, res) => {
   if (!req.session.user) {
-    return res.status(401).json({ 
-      error: 'Unauthorized',
-      message: 'Your session has expired. Please refresh the page and log in again.'
-    });
+    return res.status(401).json({ error: 'Unauthorized' });
   }
   const query = req.query.query;
   let results;
