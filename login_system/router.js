@@ -34,8 +34,18 @@ router.post('/route/login', async (req, res) => {
         }
 
         if (req.body.password === user.password) {
+            // Store user in session
             req.session.user = req.body.email;
-            return res.redirect('/route/dashboard');
+            console.log('Login successful, user saved in session:', req.body.email);
+            
+            // Force session save before redirect
+            req.session.save((err) => {
+                if (err) {
+                    console.error('Error saving session:', err);
+                    return res.render('login', { error: 'Session error. Please try again.' });
+                }
+                return res.redirect('/route/dashboard');
+            });
         } else {
             return res.render('login', { error: 'Invalid password' });
         }
