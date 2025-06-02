@@ -1,0 +1,25 @@
+<%- include('header') -%>
+<link rel="stylesheet" href="/static/css/login.css"> <!-- Reuse login styles -->
+
+<div class="login-container">
+    <div class="login-card">
+        <h1 class="login-title">Access Denied</h1>
+        <p class="login-subtitle"><%= message || 'You need to be logged in to access this page' %></p>
+        
+        <div class="error-message">
+            <strong>Error:</strong> Your session may have expired or you need to log in.
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="/route/login" class="login-button" style="display: inline-block; text-decoration: none;">
+                Log In
+            </a>
+            
+            <p style="margin-top: 15px;">
+                Don't have an account? <a href="/register">Register here</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') -%>

@@ -48,7 +48,6 @@ router.post('/route/login', async (req, res) => {
         if (req.body.password === user.password) {
             // Store user in session
             req.session.user = req.body.email;
-            req.session.authenticated = true; // Add explicit authentication flag
             console.log('Login successful, user saved in session:', req.body.email);
             
             // Force session save before redirect
@@ -57,9 +56,7 @@ router.post('/route/login', async (req, res) => {
                     console.error('Error saving session:', err);
                     return res.render('login', { error: 'Session error. Please try again.' });
                 }
-                console.log('Session saved successfully, redirecting to dashboard');
-                // Use a direct render instead of redirect to avoid session loss
-                return res.render('dashboard', { user: req.session.user });
+                return res.redirect('/route/dashboard');
             });
         } else {
             return res.render('login', { error: 'Invalid password' });
@@ -156,13 +153,6 @@ router.post('/register', async (req, res) => {
 // Route for dashboard
 router.get('/route/dashboard', (req, res) => {
     console.log('Dashboard route accessed, session state:', req.session);
-    console.log('Session ID:', req.sessionID);
-    
-    // Check for session with more detailed logging
-    if (req.session) {
-        console.log('Session exists, user property:', req.session.user);
-        console.log('Session authenticated flag:', req.session.authenticated);
-    }
     
     if (req.session && req.session.user) {
         console.log('User found in session:', req.session.user);
