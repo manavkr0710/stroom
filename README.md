@@ -31,7 +31,7 @@ Stroom is a full-stack web application that helps users find, create, and join s
 
 1. Clone the repository
    ```
-   git clone https://github.com/your-username/Stroom.git
+   git clone https://github.com/manavkr0710/stroom.git
    cd Stroom-main
    ```
 
