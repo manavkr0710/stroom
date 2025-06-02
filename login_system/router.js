@@ -12,6 +12,18 @@ const User = mongoose.model('User', UserSchema, 'userInfo');
 const emailjs = require('emailjs-com');
 
 
+// Authentication middleware
+const authMiddleware = (req, res, next) => {
+  if (req.session && req.session.user) {
+    return next();
+  } else {
+    // Create a friendly unauthorized page
+    return res.render('unauthorized', { 
+      title: 'Access Denied',
+      message: 'Please log in to access this page'
+    });
+  }
+};
 
 const noteSchema = new mongoose.Schema({
   location: String,
@@ -59,6 +71,7 @@ router.post('/route/login', async (req, res) => {
 router.get('/route/login', (req, res) => {
     const showSuccess = req.query.success === 'true';
     const showLogout = req.query.logout === 'true';
+    const errorMsg = req.query.error;
     
     let successMessage = null;
     if (showSuccess) {
@@ -67,7 +80,10 @@ router.get('/route/login', (req, res) => {
         successMessage = 'Logged out successfully!';
     }
     
-    res.render('login', { success: successMessage });
+    res.render('login', { 
+        success: successMessage,
+        error: errorMsg
+    });
 });
 
 // Route for rendering the register page
