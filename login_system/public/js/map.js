@@ -7,6 +7,11 @@ var studyLocations = []; // Array to store study location markers
 
 // Initialize the map
 function initMap() {
+    // Only initialize map if map container is visible
+    if (document.getElementById('map-container').style.display === 'none') {
+        return; // Don't initialize map if container is hidden
+    }
+
     // Default location (will be used if geolocation fails)
     var defaultLocation = {lat: 43.66088234260811, lng: -79.39609722039485};
     

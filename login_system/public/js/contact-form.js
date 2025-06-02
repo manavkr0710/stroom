@@ -1,6 +1,4 @@
-// Initialize EmailJS
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize EmailJS
     emailjs.init("llMQau6hgp4Eu9e4M");
 
     const dashboardContactForm = document.getElementById('dashboardContactForm');
