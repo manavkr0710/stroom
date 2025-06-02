@@ -46,18 +46,42 @@ if (!uri) {
 }
 
 async function connect() {
-    try {
-        console.log('Attempting to connect to MongoDB at:', uri.replace(/:([^:@]+)@/, ':****@')); // Hide password in logs
-        await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-        console.log('Connected to the database successfully');
-    } catch(error) {
-        console.error('Database connection error: ', error);
-        // Log more detailed information about the error
-        if (error.name === 'MongooseServerSelectionError') {
-            console.error('MongoDB server selection error - check your connection string and network');
-        }
-        if (error.name === 'MongoNetworkError') {
-            console.error('MongoDB network error - check your internet connection and firewall settings');
+    let retries = 5;
+    while (retries > 0) {
+        try {
+            console.log('Attempting to connect to MongoDB at:', uri.replace(/:([^:@]+)@/, ':****@')); // Hide password in logs
+            await mongoose.connect(uri, { 
+                useNewUrlParser: true, 
+                useUnifiedTopology: true,
+                serverSelectionTimeoutMS: 5000, // 5 seconds timeout during server selection
+                socketTimeoutMS: 45000, // 45 seconds for operations
+                connectTimeoutMS: 10000 // 10 seconds to establish initial connection
+            });
+            console.log('Connected to the database successfully');
+            
+            // Test the connection with a simple query
+            const collections = await mongoose.connection.db.listCollections().toArray();
+            console.log(`Available collections: ${collections.map(c => c.name).join(', ')}`);
+            return; // Successfully connected
+        } catch(error) {
+            retries--;
+            console.error(`Database connection error (${retries} retries left): `, error);
+            
+            // Log more detailed information about the error
+            if (error.name === 'MongoServerSelectionError') {
+                console.error('MongoDB server selection error - check your connection string and network');
+            }
+            if (error.name === 'MongoNetworkError') {
+                console.error('MongoDB network error - check your internet connection and firewall settings');
+            }
+            
+            if (retries <= 0) {
+                console.error('FATAL: Failed to connect to MongoDB after multiple attempts');
+                // Don't exit process as it would crash the server, just log the error
+            } else {
+                console.log(`Retrying connection in 5 seconds...`);
+                await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds before retry
+            }
         }
     }
 }
