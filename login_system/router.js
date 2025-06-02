@@ -68,17 +68,59 @@ router.get('/register', (req, res) => {
 // Route for handling registration
 router.post('/register', async (req, res) => {
     try {
+        // Log registration attempt (without exposing full password)
+        console.log(`[REGISTER] Registration attempt for email: ${req.body.email}`);
+        
+        // Input validation
         const { email, password } = req.body;
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.render('register', { error: 'User already exists' });
+        if (!email || !password) {
+            console.log('[REGISTER ERROR] Missing email or password');
+            return res.render('register', { error: 'Email and password are required' });
         }
+        
+        // Check if MongoDB is connected
+        if (mongoose.connection.readyState !== 1) {
+            console.error('[REGISTER ERROR] MongoDB is not connected. Connection state:', mongoose.connection.readyState);
+            return res.render('register', { error: 'Database connection issue. Please try again later.' });
+        }
+        
+        try {
+            // Check if user exists
+            console.log('[REGISTER] Checking if user exists...');
+            const existingUser = await User.findOne({ email });
+            if (existingUser) {
+                console.log(`[REGISTER ERROR] User with email ${email} already exists`);
+                return res.render('register', { error: 'User already exists' });
+            }
+        } catch (dbError) {
+            console.error('[REGISTER ERROR] Error checking existing user:', dbError);
+            return res.render('register', { error: 'Database error. Please try again later.' });
+        }
+        
+        // Create new user
+        console.log(`[REGISTER] Creating new user with email: ${email}`);
         const newUser = new User({ email, password });
-        await newUser.save();
-        res.redirect('/route/login?success=true');
+        
+        try {
+            await newUser.save();
+            console.log(`[REGISTER] User ${email} registered successfully`);
+            // Redirect to login
+            return res.redirect('/route/login?success=true');
+        } catch (saveError) {
+            console.error('[REGISTER ERROR] Error saving user:', saveError);
+            return res.render('register', { error: 'Could not save user. Please try again.' });
+        }
     } catch (err) {
-        console.log(err);
-        res.status(500).send('Error registering user');
+        console.error('[REGISTER ERROR] Unexpected error:', err);
+        
+        // Provide more specific error messages
+        if (err.name === 'ValidationError') {
+            return res.render('register', { error: 'Invalid input data' });
+        } else if (err.name === 'MongoServerError' && err.code === 11000) {
+            return res.render('register', { error: 'This email is already registered' });
+        } else {
+            return res.render('register', { error: 'Error registering user. Please try again later.' });
+        }
     }
 });
 
