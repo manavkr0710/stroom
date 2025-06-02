@@ -37,13 +37,13 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script type="text/javascript">
   (function(){
-    emailjs.init("llMQau6hgp4Eu9e4M"); 
+    emailjs.init("YOUR_PUBLIC_KEY"); 
   })();
 
   document.getElementById('contactForm').addEventListener('submit', function(event) {
     event.preventDefault();
-    const serviceID = 'service_4qs9h3n';
-    const templateID = 'template_bpww9cg';
+    const serviceID = 'YOUR_EMAILJS_SERVICE_ID';
+    const templateID = 'YOUR_EMAILJS_TEMPLATE_ID';
     const templateParams = {
       from_name: this.name.value,
       from_email: this.email.value,
