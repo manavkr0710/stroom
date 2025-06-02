@@ -8,9 +8,8 @@ function displayMap() {
     // Then display map container
     document.getElementById('map-container').style.display = 'block';
     
-    // Force re-initialization of map if needed
     if (typeof google !== 'undefined' && typeof initMap === 'function') {
-        setTimeout(initMap, 100); // Short delay to ensure container is visible
+        setTimeout(initMap, 100); 
     }
 }
 

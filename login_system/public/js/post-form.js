@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const tagsInput = document.getElementById('tags');
     const postsContainer = document.getElementById('posts-container');
 
-    // Event listener for form submission: send to server and display
     if (postForm) {
         postForm.addEventListener('submit', async function(event) {
             event.preventDefault();

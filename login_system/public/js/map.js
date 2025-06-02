@@ -1,9 +1,9 @@
 var map;
-var userLocationMarker; // To track user's location marker
-var locationButton; // For custom location button
-var userLocation; // Store user's location for re-centering
-var watchId; // For tracking location updates
-var studyLocations = []; // Array to store study location markers
+var userLocationMarker; 
+var locationButton; 
+var userLocation; 
+var watchId; 
+var studyLocations = []; 
 
 // Initialize the map
 function initMap() {
@@ -135,7 +135,6 @@ function initMap() {
             }
         );
     } else {
-        // Browser doesn't support geolocation
         handleNoGeolocation(true);
     }
     

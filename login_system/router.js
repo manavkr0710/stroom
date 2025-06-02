@@ -159,7 +159,6 @@ router.get('/route/dashboard', (req, res) => {
         res.render('dashboard', { user: req.session.user });
     } else {
         console.log('No user in session, redirecting to login');
-        // Instead of showing "Unauthorized User", redirect to login page with a message
         res.redirect('/route/login?error=Please%20login%20to%20access%20the%20dashboard');
     }
 });
