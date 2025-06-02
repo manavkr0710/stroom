@@ -8,7 +8,6 @@ Stroom is a full-stack web application that helps users find, create, and join s
 - Interactive map with nearby study locations
 - Create and manage study sessions
 - Search functionality to find relevant study groups
-- Mobile-responsive design
 
 
 ## Tech Stack
@@ -16,7 +15,7 @@ Stroom is a full-stack web application that helps users find, create, and join s
 - **Frontend**: HTML, CSS, JavaScript, EJS templates, Bootstrap
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
-- **APIs**: Google Maps API
+- **APIs**: Google Maps API, EmailJS
 
 
 
