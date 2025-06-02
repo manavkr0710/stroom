@@ -34,18 +34,8 @@ router.post('/route/login', async (req, res) => {
         }
 
         if (req.body.password === user.password) {
-            // Store user in session
             req.session.user = req.body.email;
-            console.log('Login successful, user saved in session:', req.body.email);
-            
-            // Force session save before redirect
-            req.session.save((err) => {
-                if (err) {
-                    console.error('Error saving session:', err);
-                    return res.render('login', { error: 'Session error. Please try again.' });
-                }
-                return res.redirect('/route/dashboard');
-            });
+            return res.redirect('/route/dashboard');
         } else {
             return res.render('login', { error: 'Invalid password' });
         }
@@ -59,7 +49,6 @@ router.post('/route/login', async (req, res) => {
 router.get('/route/login', (req, res) => {
     const showSuccess = req.query.success === 'true';
     const showLogout = req.query.logout === 'true';
-    const errorMsg = req.query.error;
     
     let successMessage = null;
     if (showSuccess) {
@@ -68,10 +57,7 @@ router.get('/route/login', (req, res) => {
         successMessage = 'Logged out successfully!';
     }
     
-    res.render('login', { 
-        success: successMessage,
-        error: errorMsg
-    });
+    res.render('login', { success: successMessage });
 });
 
 // Route for rendering the register page
@@ -82,73 +68,26 @@ router.get('/register', (req, res) => {
 // Route for handling registration
 router.post('/register', async (req, res) => {
     try {
-        // Log registration attempt (without exposing full password)
-        console.log(`[REGISTER] Registration attempt for email: ${req.body.email}`);
-        
-        // Input validation
         const { email, password } = req.body;
-        if (!email || !password) {
-            console.log('[REGISTER ERROR] Missing email or password');
-            return res.render('register', { error: 'Email and password are required' });
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.render('register', { error: 'User already exists' });
         }
-        
-        // Check if MongoDB is connected
-        if (mongoose.connection.readyState !== 1) {
-            console.error('[REGISTER ERROR] MongoDB is not connected. Connection state:', mongoose.connection.readyState);
-            return res.render('register', { error: 'Database connection issue. Please try again later.' });
-        }
-        
-        try {
-            // Check if user exists
-            console.log('[REGISTER] Checking if user exists...');
-            const existingUser = await User.findOne({ email });
-            if (existingUser) {
-                console.log(`[REGISTER ERROR] User with email ${email} already exists`);
-                return res.render('register', { error: 'User already exists' });
-            }
-        } catch (dbError) {
-            console.error('[REGISTER ERROR] Error checking existing user:', dbError);
-            return res.render('register', { error: 'Database error. Please try again later.' });
-        }
-        
-        // Create new user
-        console.log(`[REGISTER] Creating new user with email: ${email}`);
         const newUser = new User({ email, password });
-        
-        try {
-            await newUser.save();
-            console.log(`[REGISTER] User ${email} registered successfully`);
-            // Redirect to login
-            return res.redirect('/route/login?success=true');
-        } catch (saveError) {
-            console.error('[REGISTER ERROR] Error saving user:', saveError);
-            return res.render('register', { error: 'Could not save user. Please try again.' });
-        }
+        await newUser.save();
+        res.redirect('/route/login?success=true');
     } catch (err) {
-        console.error('[REGISTER ERROR] Unexpected error:', err);
-        
-        // Provide more specific error messages
-        if (err.name === 'ValidationError') {
-            return res.render('register', { error: 'Invalid input data' });
-        } else if (err.name === 'MongoServerError' && err.code === 11000) {
-            return res.render('register', { error: 'This email is already registered' });
-        } else {
-            return res.render('register', { error: 'Error registering user. Please try again later.' });
-        }
+        console.log(err);
+        res.status(500).send('Error registering user');
     }
 });
 
 // Route for dashboard
 router.get('/route/dashboard', (req, res) => {
-    console.log('Dashboard route accessed, session state:', req.session);
-    
-    if (req.session && req.session.user) {
-        console.log('User found in session:', req.session.user);
+    if(req.session.user) {
         res.render('dashboard', { user: req.session.user });
     } else {
-        console.log('No user in session, redirecting to login');
-        // Instead of showing "Unauthorized User", redirect to login page with a message
-        res.redirect('/route/login?error=Please%20login%20to%20access%20the%20dashboard');
+        res.send('Unauthorized User');
     }
 });
 
