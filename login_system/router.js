@@ -12,12 +12,10 @@ const User = mongoose.model('User', UserSchema, 'userInfo');
 const emailjs = require('emailjs-com');
 
 
-// Authentication middleware
 const authMiddleware = (req, res, next) => {
   if (req.session && req.session.user) {
     return next();
   } else {
-    // Create a friendly unauthorized page
     return res.render('unauthorized', { 
       title: 'Access Denied',
       message: 'Please log in to access this page'

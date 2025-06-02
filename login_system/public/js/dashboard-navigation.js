@@ -1,11 +1,9 @@
 // Functions to toggle different views in the dashboard
 function displayMap() {
-    // First hide all other sections
     document.getElementsByClassName('post-form-container')[0].style.display = 'none';
     document.getElementById('contact-form-container').style.display = 'none';
     document.getElementById('search-form-container').style.display = 'none';
     
-    // Then display map container
     document.getElementById('map-container').style.display = 'block';
     
     if (typeof google !== 'undefined' && typeof initMap === 'function') {
@@ -28,22 +26,18 @@ function displayContactForm() {
 }
 
 async function displaySearchForm() {
-    // Hide map container completely first to avoid any overlap
     const mapContainer = document.getElementById('map-container');
     mapContainer.style.display = 'none';
     
-    // Explicitly hide map instructions and header
     const mapHeader = document.querySelector('.map-header');
     if (mapHeader) {
         mapHeader.style.visibility = 'hidden';
         mapHeader.style.display = 'none';
     }
     
-    // Hide other sections
     document.getElementsByClassName('post-form-container')[0].style.display = 'none';
     document.getElementById('contact-form-container').style.display = 'none';
     
-    // Now show search container
     document.getElementById('search-form-container').style.display = 'block';
     
     try {

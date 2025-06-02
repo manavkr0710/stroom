@@ -1,4 +1,4 @@
-// Section visibility fix script
+
 // This script ensures that map instructions only appear in the map view
 
 document.addEventListener('DOMContentLoaded', function() {
