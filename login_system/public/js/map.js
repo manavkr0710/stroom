@@ -299,7 +299,6 @@ function addLocationButton() {
         }
     });
     
-    // Add the control to the map
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(locationControlDiv);
 }
 
