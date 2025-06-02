@@ -55,4 +55,3 @@ Stroom is a full-stack web application that helps users find, create, and join s
    ```
 
 5. Visit `http://localhost:3001` in your browser
-![get-started-stroom](https://github.com/user-attachments/assets/ab4cd81e-08dc-4871-91bc-2c3fc80ffde8)
