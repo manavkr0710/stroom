@@ -79,10 +79,10 @@ app.set('view engine', 'ejs');
 
 app.use(session({
     secret: config.SESSION_SECRET || uuidv4(),
-    resave: false,
+    resave: true, // Changed to true to ensure session is saved
     saveUninitialized: true,
     cookie: {
-        secure: env === 'production', // Use secure cookies in production
+        secure: false, // Changed to false to work in both HTTP and HTTPS
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
