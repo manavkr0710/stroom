@@ -68,17 +68,42 @@ router.get('/register', (req, res) => {
 // Route for handling registration
 router.post('/register', async (req, res) => {
     try {
+        // Log registration attempt (without exposing full password)
+        console.log(`Registration attempt for email: ${req.body.email}`);
+        
+        // Input validation
         const { email, password } = req.body;
+        if (!email || !password) {
+            console.log('Registration error: Missing email or password');
+            return res.render('register', { error: 'Email and password are required' });
+        }
+        
+        // Check if user exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
+            console.log(`Registration error: User with email ${email} already exists`);
             return res.render('register', { error: 'User already exists' });
         }
+        
+        // Create new user
+        console.log(`Creating new user with email: ${email}`);
         const newUser = new User({ email, password });
         await newUser.save();
+        console.log(`User ${email} registered successfully`);
+        
+        // Redirect to login
         res.redirect('/route/login?success=true');
     } catch (err) {
-        console.log(err);
-        res.status(500).send('Error registering user');
+        console.error('Registration error:', err);
+        
+        // Provide more specific error messages
+        if (err.name === 'ValidationError') {
+            return res.render('register', { error: 'Invalid input data' });
+        } else if (err.name === 'MongoServerError' && err.code === 11000) {
+            return res.render('register', { error: 'This email is already registered' });
+        } else {
+            return res.render('register', { error: 'Error registering user. Please try again later.' });
+        }
     }
 });
 

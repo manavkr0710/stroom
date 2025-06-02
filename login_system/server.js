@@ -8,23 +8,64 @@ const mongoose = require('mongoose');
 
 // Import configuration based on environment
 const env = process.env.NODE_ENV || 'development';
-const config = require('../config')[env];
-
-const router = require('./router');
-
-// Database connection URI from config
-const uri = config.MONGODB_URI;
-
-async function connect() {
+let config;
+try {
+    // Try to load config from project root
+    config = require('../config')[env];
+    console.log('Loaded config from project root');
+} catch (error) {
+    console.log('Failed to load config from project root:', error.message);
     try {
-        await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-        console.log('Connected to the database');
-    } catch(error) {
-        console.error('Database connection error: ', error);
+        // Try to load from current directory
+        config = require('./config')[env];
+        console.log('Loaded config from current directory');
+    } catch (error) {
+        console.log('Failed to load config from current directory:', error.message);
+        // Fallback to environment variables
+        config = {
+            PORT: process.env.PORT || 3001,
+            MONGODB_URI: process.env.MONGODB_URI || 'mongodb+srv://Manav:babumanav@cluster0.rwhl77f.mongodb.net/Stroom',
+            SESSION_SECRET: process.env.SESSION_SECRET || 'fallback-session-secret'
+        };
+        console.log('Using fallback configuration:', config);
     }
 }
 
-connect();
+const router = require('./router');
+
+// Database connection URI from config with validation
+let uri = config.MONGODB_URI;
+
+// Validate MongoDB URI
+if (!uri) {
+    console.error('MongoDB URI is missing or undefined. Check your environment variables or config file.');
+    uri = 'mongodb+srv://Manav:babumanav@cluster0.rwhl77f.mongodb.net/Stroom';
+    console.log('Falling back to hardcoded MongoDB URI for development');
+} else if (!uri.startsWith('mongodb')) {
+    console.error('Invalid MongoDB URI format. URI should start with "mongodb://" or "mongodb+srv://"');
+}
+
+async function connect() {
+    try {
+        console.log('Attempting to connect to MongoDB at:', uri.replace(/:([^:@]+)@/, ':****@')); // Hide password in logs
+        await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        console.log('Connected to the database successfully');
+    } catch(error) {
+        console.error('Database connection error: ', error);
+        // Log more detailed information about the error
+        if (error.name === 'MongooseServerSelectionError') {
+            console.error('MongoDB server selection error - check your connection string and network');
+        }
+        if (error.name === 'MongoNetworkError') {
+            console.error('MongoDB network error - check your internet connection and firewall settings');
+        }
+    }
+}
+
+// Connect with better error reporting
+connect().catch(err => {
+    console.error('Failed to start database connection:', err);
+});
 
 // Use port from config
 const port = config.PORT || 3001;
@@ -64,6 +105,20 @@ app.use('/', router);
 app.use('/static', express.static(path.join(__dirname, 'public')));
 
 app.set('views', path.join(__dirname, 'views'));
+
+// Health check endpoint for monitoring
+app.get('/health', (req, res) => {
+    const health = {
+        uptime: process.uptime(),
+        timestamp: Date.now(),
+        mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+        environment: env
+    };
+    
+    // If MongoDB is not connected, return 503 status
+    const status = health.mongodb === 'connected' ? 200 : 503;
+    return res.status(status).json(health);
+});
 
 // Home Route
 app.get(`/`, (req, res) => {
