@@ -1,4 +1,4 @@
-# Stroom - Study Room Finder
+# Stroom
 
 ![welcome-stroom](https://github.com/user-attachments/assets/7b3eb9f3-952b-4141-9b48-fafa0f20f538)
 
