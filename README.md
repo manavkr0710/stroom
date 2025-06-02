@@ -1,5 +1,7 @@
 # Stroom - Study Room Finder
 
+![welcome-stroom](https://github.com/user-attachments/assets/7b3eb9f3-952b-4141-9b48-fafa0f20f538)
+
 Stroom is a full-stack web application that helps users find, create, and join study sessions. Built with Node.js, Express, MongoDB, and the Google Maps API, it provides an interactive way to discover study spots and organize collaborative learning.
 
 ## Features
@@ -9,6 +11,12 @@ Stroom is a full-stack web application that helps users find, create, and join s
 - Create and manage study sessions
 - Search functionality to find relevant study groups
 
+![createpost-stroom](https://github.com/user-attachments/assets/90a2cf67-6b40-4b95-be85-cab3ac16fca0)
+![map-stroom](https://github.com/user-attachments/assets/3580628b-d68a-4ec0-b51d-b33dcd720515)
+
+![mystudysessions-stroom](https://github.com/user-attachments/assets/7438813d-3364-486a-af91-b6ce8343f480)
+![allavailablesessions-stroom](https://github.com/user-attachments/assets/dc5d47ac-e9a1-4797-9cbb-8bf2276ee9be)
+![contact-stroom](https://github.com/user-attachments/assets/9ef2d6a5-9095-4dbe-a52d-022b84e3493b)
 
 ## Tech Stack
 
@@ -47,3 +55,4 @@ Stroom is a full-stack web application that helps users find, create, and join s
    ```
 
 5. Visit `http://localhost:3001` in your browser
+![get-started-stroom](https://github.com/user-attachments/assets/ab4cd81e-08dc-4871-91bc-2c3fc80ffde8)
