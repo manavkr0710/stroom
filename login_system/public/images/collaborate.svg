@@ -1,0 +1,25 @@
+<svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+  <!-- Collaboration/Group icon -->
+  <g transform="translate(75,75)">
+    <!-- Person 1 -->
+    <circle cx="-25" cy="-15" r="12" fill="#6a11cb"/>
+    <ellipse cx="-25" cy="10" rx="18" ry="25" fill="#2575fc"/>
+    
+    <!-- Person 2 -->
+    <circle cx="0" cy="-20" r="12" fill="#6a11cb"/>
+    <ellipse cx="0" cy="5" rx="18" ry="25" fill="#2575fc"/>
+    
+    <!-- Person 3 -->
+    <circle cx="25" cy="-15" r="12" fill="#6a11cb"/>
+    <ellipse cx="25" cy="10" rx="18" ry="25" fill="#2575fc"/>
+    
+    <!-- Connection lines -->
+    <line x1="-15" y1="-10" x2="-5" y2="-15" stroke="#7cc7de" stroke-width="3"/>
+    <line x1="5" y1="-15" x2="15" y2="-10" stroke="#7cc7de" stroke-width="3"/>
+    
+    <!-- Speech bubbles -->
+    <circle cx="-35" cy="-35" r="8" fill="#7cc7de" opacity="0.8"/>
+    <circle cx="10" cy="-40" r="8" fill="#7cc7de" opacity="0.8"/>
+    <circle cx="35" cy="-35" r="8" fill="#7cc7de" opacity="0.8"/>
+  </g>
+</svg>

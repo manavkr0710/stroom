@@ -1,0 +1,138 @@
+<%- include('dashboardHeader') -%>
+<link rel="stylesheet" href="/static/css/dashboard.css">
+
+<!-- Main Content -->
+<div class="container">
+    <!-- Stroom Logo -->
+    <img class="pg" src="/static/StroomLogo.png" alt="Stroom Logo" />
+    
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <!-- Maps Navigation Link -->
+        <li><a href="#" onclick="displayMap()">Maps</a></li>
+        <li><a href="#" onclick="displaySearchForm()">Search</a></li>
+        <li><a href="#" onclick="displayPostForm()">Create Post</a></li>
+        <li><a href="#" onclick="displayContactForm()">Contact Us</a></li>
+        <li class="ms-auto"><a href="/route/logout">Log Out</a></li>  <!-- Added ms-auto to align logout to the right -->
+    </div>
+</div>
+
+<!-- Removed Stroom Title from here -->
+
+<div class="post-form-container">
+    <h2 class="text-center">Create A Study Session</h2>
+    <div id="postFeedback"></div>
+    <form id="post-form" class="post-form">
+      <div class="form-group">
+        <input type="text" id="location" name="location" placeholder="Location" class="form-control">
+      </div>
+      <div class="form-group">
+        <input type="text" id="room" name="room" placeholder="Room" class="form-control">
+      </div>
+      <div class="form-group">
+        <input type="text" id="time" name="time" placeholder="Time" class="form-control">
+      </div>
+      <div class="form-group">
+        <input type="text" id="study-topics" name="studyTopics" placeholder="Study Topics" class="form-control">
+      </div>
+      <div class="form-group">
+        <textarea id="additional-notes" name="additionalNotes" placeholder="Additional Notes" class="form-control"></textarea>
+      </div>
+      <div class="form-group">
+        <input type="text" id="tags" name="tags" placeholder="Tags" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-success">Post</button>
+    </form>
+    <div id="posts-container" class="posts-container"></div>
+  </div>
+
+<div id="contact-form-container" class="center-div" style="display: none;">
+  <h2 class="text-center">Contact Us</h2>
+  <div class="form-container">
+    <div id="dashboardContactFeedback"></div>
+    <form id="dashboardContactForm">
+      <div class="form-group mb-3">
+        <input type="text" name="name" placeholder="Your Name" class="form-control" required>
+      </div>
+      <div class="form-group mb-3">
+        <input type="email" name="email" placeholder="Your Email" class="form-control" required>
+      </div>
+      <div class="form-group mb-3">
+        <textarea name="message" placeholder="Your Message" class="form-control" rows="5" required></textarea>
+      </div>
+      <button type="submit" class="btn contact-btn">Send Message</button>
+    </form>
+  </div>
+</div>
+
+<div id="search-form-container" class="center-div" style="display: none;">
+  <div class="search-container">
+    <h2 class="text-center">Study Sessions</h2>
+    
+    <!-- Enhanced Search Box -->
+    <div class="search-box">
+      <form id="inlineSearchForm">
+        <input type="text" id="inlineSearchInput" placeholder="Search for study topics, locations, or tags..." autocomplete="off">
+        <button type="submit">Search</button>
+      </form>
+    </div>
+    
+    <div class="search-divider"></div>
+    
+    <!-- My Study Sessions Section -->
+    <div id="mySessionsSection">
+      <h3 class="session-heading">My Study Sessions</h3>
+      <div id="mySessionsGrid" class="search-grid"></div>
+      <div id="mySessionsEmpty" class="empty-state" style="display: none;">
+        You haven't created any study sessions yet.
+      </div>
+    </div>
+    
+    <div class="search-divider"></div>
+    
+    <!-- Search Results Section -->
+    <div id="inlineResultsSection">
+      <h3 class="session-heading">All Available Sessions</h3>
+      <div id="inlineResults" class="search-grid"></div>
+      <div id="noResults" class="empty-state" style="display: none;">
+        No sessions found matching your search.
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- External post form JavaScript file -->
+  <script src="/static/js/post-form.js"></script>
+
+<!-- Google Maps API -->
+<div id="map-container" class="center-div" style="display: none;">
+  <div class="map-header">
+    <h2 class="text-center">Find Study Locations</h2>
+    <p class="map-instructions">Click the location button in the bottom right to center on your current location. The blue dot shows where you are. Red markers indicate available study spots - click on them for details.</p>
+  </div>
+  <div id="map"></div>
+</div>
+<script defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGP3P-gNNf0-BS31c-fAprwwhxY6CldVM&callback=initMap">
+</script>
+
+<!-- External map JavaScript file -->
+<script src="/static/js/map.js"></script>
+
+<!-- External navigation JavaScript file -->
+<script src="/static/js/dashboard-navigation.js"></script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<!-- External contact form JavaScript file -->
+<script src="/static/js/contact-form.js"></script>
+<!-- External inline search JavaScript file -->
+<script src="/static/js/inline-search.js"></script>
+
+<!-- Footer with Stroom Copyright -->
+<div class="footer-copyright">
+  <div class="copyright-text">
+    <h1>Stroom &copy;</h1>
+  </div>
+</div>
+
+<%- include('dashboardFooter') -%>

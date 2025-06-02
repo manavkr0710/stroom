@@ -1,0 +1,212 @@
+#map {
+    height: 700px;
+    width: 100%;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    justify-content: center;
+    background: #7cc7de;
+    margin: 0;
+    padding: 0;
+    min-width: 100%;
+}
+
+.slanted {
+    padding-bottom: 8px;
+    padding-left: 1px;
+    padding-right: 1px;
+    transform: rotate(-20deg);
+    position: relative;
+    font-family: 'Brush Script MT', cursive;
+}
+
+
+.pg {
+    display: block;
+    margin: 20px auto;
+    max-width: 200px;
+    height: auto;
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.navbar li {
+    list-style: none;
+    padding: 0 85px;  
+    position: relative;
+}
+
+.navbar li a {
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: 650;
+    color: #000000;
+    transition: 0.3s ease-in-out;
+}
+
+.navbar li a:hover {
+    color: #bd3636;
+}
+
+.post-form-container {
+    justify-content: center;
+
+    width: 500px;
+    margin: auto;
+    margin-top: 30px;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .post-form-container h2 {
+    background: linear-gradient(135deg, #7cc7de 0%, #2dd4bf 100%);
+    color: white;
+    padding: 20px 0;
+    margin: 0 0 20px 0;
+    font-size: 24px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 15px 15px 0 0; 
+  }
+  
+  .post-form {
+    background-color: #fff;
+    border: none;
+    padding: 30px;
+    margin-bottom: 0;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+  }
+  
+  .form-control:focus {
+    border-color: #7cc7de;
+    box-shadow: 0 0 0 2px rgba(124, 199, 222, 0.25);
+    background-color: #fff;
+    outline: none;
+  }
+  
+  .form-control::placeholder {
+    color: #aaa;
+  }
+  
+  textarea.form-control {
+    min-height: 120px;
+    resize: vertical;
+  }
+  
+  .btn {
+    background: linear-gradient(135deg, #7cc7de 0%, #2dd4bf 100%);
+    color: #fff;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px rgba(124, 199, 222, 0.3);
+  }
+  
+  .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(124, 199, 222, 0.4);
+    background: linear-gradient(135deg, #2dd4bf 0%, #7cc7de 100%);
+  }
+  
+  .posts-container {
+    background-color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  }
+  
+  .post {
+    position: relative;
+    padding: 16px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+    border-left: 4px solid #7cc7de;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .post strong {
+    font-size: 18px;
+    margin-bottom: 8px;
+    display: block;
+    color: #333;
+    font-weight: 600;
+  }
+  
+  .post:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .post span {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+  }
+  
+  .footer-copyright {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 20px 0;
+    margin-top: 50px;  
+    background: #7cc7de;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+  }
+  
+  .copyright-text {
+    text-align: center;
+  }
+  
+  .copyright-text h1 {
+    font-family: 'Brush Script MT', cursive;
+    font-size: 28px;
+    margin: 0;
+    color: #000000;
+  }
+  
+  
+  .member-count {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #1da1f2;
+    color: #fff;
+    padding: 4px 8px;
+  }

@@ -1,0 +1,27 @@
+<%- include('header') -%>
+<link rel="stylesheet" href="/static/css/register.css">
+
+<div class="register-container">    <a href="/route/login" class="return-link">Return to Login</a>
+    
+    <div class="register-card">
+        <h1 class="register-title">Register</h1>
+        
+        <% if (locals.error) { %>
+            <div class="error-alert">
+                <strong>Error:</strong> <%= error %>
+            </div>
+        <% } %>
+        
+        <form action="/register" method="POST" class="register-form">
+            <div>
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <div>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="register-button">Register</button>
+        </form>
+    </div>
+</div>
+
+<%- include('footer') -%>

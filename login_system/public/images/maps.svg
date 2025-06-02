@@ -1,0 +1,33 @@
+<svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+  <!-- Maps/Location icon with inverted colors -->
+  <g transform="translate(75,75) scale(1,-1)">
+    <!-- Map background -->
+    <rect x="-45" y="-35" width="90" height="70" rx="5" fill="#e8f4f8" stroke="#6a11cb" stroke-width="2"/>
+    
+    <!-- Map roads -->
+    <line x1="-45" y1="-10" x2="45" y2="-10" stroke="#7cc7de" stroke-width="3"/>
+    <line x1="-45" y1="10" x2="45" y2="10" stroke="#7cc7de" stroke-width="3"/>
+    <line x1="-20" y1="-35" x2="-20" y2="35" stroke="#7cc7de" stroke-width="3"/>
+    <line x1="20" y1="-35" x2="20" y2="35" stroke="#7cc7de" stroke-width="3"/>
+    
+    <!-- Location pins -->
+    <g transform="translate(-25,-20)">
+      <path d="M0 0 C-5 0 -10 -5 -10 -10 C-10 -15 0 -25 0 -25 C0 -25 10 -15 10 -10 C10 -5 5 0 0 0 Z" fill="#2575fc"/>
+      <circle cx="0" cy="-10" r="4" fill="white"/>
+    </g>
+    
+    <g transform="translate(25,5)">
+      <path d="M0 0 C-5 0 -10 -5 -10 -10 C-10 -15 0 -25 0 -25 C0 -25 10 -15 10 -10 C10 -5 5 0 0 0 Z" fill="#6a11cb"/>
+      <circle cx="0" cy="-10" r="4" fill="white"/>
+    </g>
+    
+    <g transform="translate(0,15)">
+      <path d="M0 0 C-5 0 -10 -5 -10 -10 C-10 -15 0 -25 0 -25 C0 -25 10 -15 10 -10 C10 -5 5 0 0 0 Z" fill="#7cc7de"/>
+      <circle cx="0" cy="-10" r="4" fill="white"/>
+    </g>
+    
+    <!-- Buildings -->
+    <rect x="-35" y="-25" width="8" height="10" fill="#6a11cb"/>
+    <rect x="30" y="-20" width="8" height="8" fill="#2575fc"/>
+  </g>
+</svg>

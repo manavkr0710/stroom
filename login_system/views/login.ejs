@@ -1,0 +1,35 @@
+<%- include('header') -%>
+<link rel="stylesheet" href="/static/css/login.css">
+<script src="/static/js/login.js"></script>
+
+<% if (locals.success) { %>
+<div class="success-popup">
+    <%= success %>
+</div>
+<% } %>
+
+<div class="login-container">
+    <div class="login-card">
+        <h1 class="login-title">Login System</h1>
+        <p class="login-subtitle">Log in for the existing user</p>
+          <% if (locals.error) { %>
+            <div class="error-message">
+                <strong>Error:</strong> <%= error %>
+            </div>
+        <% } %>
+        
+        <form action="/route/login" method="POST" class="login-form">
+            <div>
+                <input type="email" name="email" placeholder="Email" required>
+            </div>
+            <div>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <button type="submit" class="login-button">Submit</button>
+        </form>
+        
+        <p class="register-link">Don't have an account? <a href="/register">Register here</a></p>
+    </div>
+</div>
+
+<%- include('footer') -%>
