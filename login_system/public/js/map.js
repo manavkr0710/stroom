@@ -14,7 +14,7 @@ function initMap() {
     var options = {
         center: defaultLocation,
         zoom: 15,
-        mapId: "7219d2cdaaaa0b81",
+        mapId: "YOUR_MAP_ID",
         minZoom: 13,
         maxZoom: 18,
         mapTypeControl: false, 
