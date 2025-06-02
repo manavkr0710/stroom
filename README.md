@@ -39,7 +39,6 @@ Stroom is a full-stack web application that helps users find, create, and join s
    PORT=3001
    MONGODB_URI=mongodb+srv://your-username:your-password@your-cluster.mongodb.net/
    GOOGLE_MAPS_API_KEY=your-api-key-here
-   Stroom
    SESSION_SECRET=your-session-secret
    ```
 
