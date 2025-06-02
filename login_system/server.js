@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyparser = require('body-parser');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const {v4: uuidv4} = require('uuid');
 const app = express();
 const mongoose = require('mongoose');
@@ -46,18 +47,42 @@ if (!uri) {
 }
 
 async function connect() {
-    try {
-        console.log('Attempting to connect to MongoDB at:', uri.replace(/:([^:@]+)@/, ':****@')); // Hide password in logs
-        await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-        console.log('Connected to the database successfully');
-    } catch(error) {
-        console.error('Database connection error: ', error);
-        // Log more detailed information about the error
-        if (error.name === 'MongooseServerSelectionError') {
-            console.error('MongoDB server selection error - check your connection string and network');
-        }
-        if (error.name === 'MongoNetworkError') {
-            console.error('MongoDB network error - check your internet connection and firewall settings');
+    let retries = 5;
+    while (retries > 0) {
+        try {
+            console.log('Attempting to connect to MongoDB at:', uri.replace(/:([^:@]+)@/, ':****@')); // Hide password in logs
+            await mongoose.connect(uri, { 
+                useNewUrlParser: true, 
+                useUnifiedTopology: true,
+                serverSelectionTimeoutMS: 5000, // 5 seconds timeout during server selection
+                socketTimeoutMS: 45000, // 45 seconds for operations
+                connectTimeoutMS: 10000 // 10 seconds to establish initial connection
+            });
+            console.log('Connected to the database successfully');
+            
+            // Test the connection with a simple query
+            const collections = await mongoose.connection.db.listCollections().toArray();
+            console.log(`Available collections: ${collections.map(c => c.name).join(', ')}`);
+            return; // Successfully connected
+        } catch(error) {
+            retries--;
+            console.error(`Database connection error (${retries} retries left): `, error);
+            
+            // Log more detailed information about the error
+            if (error.name === 'MongoServerSelectionError') {
+                console.error('MongoDB server selection error - check your connection string and network');
+            }
+            if (error.name === 'MongoNetworkError') {
+                console.error('MongoDB network error - check your internet connection and firewall settings');
+            }
+            
+            if (retries <= 0) {
+                console.error('FATAL: Failed to connect to MongoDB after multiple attempts');
+                // Don't exit process as it would crash the server, just log the error
+            } else {
+                console.log(`Retrying connection in 5 seconds...`);
+                await new Promise(resolve => setTimeout(resolve, 5000)); // Wait 5 seconds before retry
+            }
         }
     }
 }
@@ -70,6 +95,12 @@ connect().catch(err => {
 // Use port from config
 const port = config.PORT || 3001;
 
+// Trust proxy in production (for Heroku)
+if (env === 'production') {
+    app.set('trust proxy', 1); // Trust first proxy
+    console.log('Running in production mode, trusting proxies');
+}
+
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 
@@ -77,13 +108,21 @@ app.use(express.json());
 
 app.set('view engine', 'ejs');
 
+// Configure session with MongoDB store
 app.use(session({
     secret: config.SESSION_SECRET || uuidv4(),
-    resave: true, // Changed to true to ensure session is saved
+    resave: false,
     saveUninitialized: true,
+    store: MongoStore.create({
+        mongoUrl: uri,
+        ttl: 14 * 24 * 60 * 60, // 14 days
+        autoRemove: 'native', // Default
+        touchAfter: 24 * 3600 // Only update the session once per day unless data changes
+    }),
     cookie: {
-        secure: false, // Changed to false to work in both HTTP and HTTPS
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        secure: false, // Setting to false to fix session issues - even in production temporarily
+        httpOnly: true, // Prevents client-side JS from reading the cookie
+        maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days in milliseconds
     }
 }));
 
@@ -118,6 +157,28 @@ app.get('/health', (req, res) => {
     // If MongoDB is not connected, return 503 status
     const status = health.mongodb === 'connected' ? 200 : 503;
     return res.status(status).json(health);
+});
+
+// Session diagnostic endpoint (for development and troubleshooting only)
+app.get('/session-diagnostic', (req, res) => {
+    // Only enable in development or with specific query parameter for security
+    if (env !== 'production' || req.query.key === process.env.DIAGNOSTIC_KEY) {
+        return res.json({
+            sessionExists: !!req.session,
+            userInSession: req.session ? req.session.user || 'Not set' : 'No session',
+            cookieSettings: req.session ? req.session.cookie : 'No cookie',
+            sessionID: req.sessionID || 'No session ID',
+            headers: {
+                cookie: req.headers.cookie || 'No cookie in headers',
+                userAgent: req.headers['user-agent'],
+                host: req.headers.host
+            },
+            secure: req.secure,
+            environment: env
+        });
+    } else {
+        return res.status(403).send('Forbidden');
+    }
 });
 
 // Home Route
