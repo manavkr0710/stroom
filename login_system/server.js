@@ -10,7 +10,7 @@ const router = require('./router');
 
 
 // Database connection URI - use environment variable for production
-const uri = process.env.MONGODB_URI || `mongodb+srv://Manav:babumanav@cluster0.rwhl77f.mongodb.net/Stroom`;
+const uri = process.env.MONGODB_URI || `mongodb+srv://username:password@cluster.mongodb.net/Stroom`;
 
 async function connect() {
     try {
