@@ -2,6 +2,22 @@
 
 ## Heroku Deployment Troubleshooting
 
+### Session and Authentication Issues
+
+If you're experiencing "Unauthorized User" errors or issues with sessions after deploying to Heroku, follow these steps:
+
+1. **Check MongoDB Connection**
+   - Make sure MongoDB Atlas accepts connections from anywhere (`0.0.0.0/0` in Network Access settings)
+   - Verify your connection string in Heroku environment variables
+
+2. **Check Session Configuration**
+   - Sessions are now stored in MongoDB using connect-mongo
+   - Secure cookies may cause issues if HTTPS is not properly set up
+
+3. **Use Diagnostic Endpoints**
+   - Visit `/health` to check if MongoDB is connected
+   - Use `/session-diagnostic?key=YOUR_DIAGNOSTIC_KEY` to check session data (set DIAGNOSTIC_KEY env var first)
+
 ### Registration Issues
 
 If you're experiencing issues with user registration after deploying to Heroku, follow these steps:

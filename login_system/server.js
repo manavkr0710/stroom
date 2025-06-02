@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyparser = require('body-parser');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const {v4: uuidv4} = require('uuid');
 const app = express();
 const mongoose = require('mongoose');
@@ -94,6 +95,12 @@ connect().catch(err => {
 // Use port from config
 const port = config.PORT || 3001;
 
+// Trust proxy in production (for Heroku)
+if (env === 'production') {
+    app.set('trust proxy', 1); // Trust first proxy
+    console.log('Running in production mode, trusting proxies');
+}
+
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 
@@ -101,13 +108,21 @@ app.use(express.json());
 
 app.set('view engine', 'ejs');
 
+// Configure session with MongoDB store
 app.use(session({
     secret: config.SESSION_SECRET || uuidv4(),
     resave: false,
     saveUninitialized: true,
+    store: MongoStore.create({
+        mongoUrl: uri,
+        ttl: 14 * 24 * 60 * 60, // 14 days
+        autoRemove: 'native', // Default
+        touchAfter: 24 * 3600 // Only update the session once per day unless data changes
+    }),
     cookie: {
-        secure: env === 'production', // Use secure cookies in production
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        secure: false, // Setting to false to fix session issues - even in production temporarily
+        httpOnly: true, // Prevents client-side JS from reading the cookie
+        maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days in milliseconds
     }
 }));
 
@@ -142,6 +157,28 @@ app.get('/health', (req, res) => {
     // If MongoDB is not connected, return 503 status
     const status = health.mongodb === 'connected' ? 200 : 503;
     return res.status(status).json(health);
+});
+
+// Session diagnostic endpoint (for development and troubleshooting only)
+app.get('/session-diagnostic', (req, res) => {
+    // Only enable in development or with specific query parameter for security
+    if (env !== 'production' || req.query.key === process.env.DIAGNOSTIC_KEY) {
+        return res.json({
+            sessionExists: !!req.session,
+            userInSession: req.session ? req.session.user || 'Not set' : 'No session',
+            cookieSettings: req.session ? req.session.cookie : 'No cookie',
+            sessionID: req.sessionID || 'No session ID',
+            headers: {
+                cookie: req.headers.cookie || 'No cookie in headers',
+                userAgent: req.headers['user-agent'],
+                host: req.headers.host
+            },
+            secure: req.secure,
+            environment: env
+        });
+    } else {
+        return res.status(403).send('Forbidden');
+    }
 });
 
 // Home Route
