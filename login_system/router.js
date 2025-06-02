@@ -136,10 +136,15 @@ router.post('/register', async (req, res) => {
 
 // Route for dashboard
 router.get('/route/dashboard', (req, res) => {
-    if(req.session.user) {
+    console.log('Dashboard route accessed, session state:', req.session);
+    
+    if (req.session && req.session.user) {
+        console.log('User found in session:', req.session.user);
         res.render('dashboard', { user: req.session.user });
     } else {
-        res.send('Unauthorized User');
+        console.log('No user in session, redirecting to login');
+        // Instead of showing "Unauthorized User", redirect to login page with a message
+        res.redirect('/route/login?error=Please%20login%20to%20access%20the%20dashboard');
     }
 });
 
