@@ -17,7 +17,7 @@ Stroom is a full-stack web application that helps users find, create, and join s
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
 - **APIs**: Google Maps API
-- **Authentication**: Express Session
+
 
 
 ## Local Development Setup
