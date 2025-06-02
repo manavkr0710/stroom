@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-    emailjs.init("llMQau6hgp4Eu9e4M");
+    emailjs.init("YOUR_PUBLIC_KEY");
 
     const dashboardContactForm = document.getElementById('dashboardContactForm');
     if (dashboardContactForm) {
         dashboardContactForm.addEventListener('submit', function(event) {
             event.preventDefault();
-            const serviceID = 'service_4qs9h3n';
-            const templateID = 'template_bpww9cg';
+            const serviceID = 'YOUR_EMAILJS_SERVICE_ID';
+            const templateID = 'YOUR_EMAILJS_SERVICE_ID';
             const templateParams = {
                 from_name: this.name.value,
                 from_email: this.email.value,
