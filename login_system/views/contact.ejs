@@ -37,13 +37,27 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script type="text/javascript">
   (function(){
-    emailjs.init("YOUR_PUBLIC_KEY"); 
+    // Read credentials from meta tags
+    const publicKey = document.querySelector('meta[name="emailjs-public-key"]')?.content;
+    if (publicKey) {
+      emailjs.init(publicKey);
+    } else {
+      console.error('EmailJS public key not found in meta tags');
+    }
   })();
 
   document.getElementById('contactForm').addEventListener('submit', function(event) {
     event.preventDefault();
-    const serviceID = 'YOUR_EMAILJS_SERVICE_ID';
-    const templateID = 'YOUR_EMAILJS_TEMPLATE_ID';
+    // Read credentials from meta tags
+    const serviceID = document.querySelector('meta[name="emailjs-service-id"]')?.content;
+    const templateID = document.querySelector('meta[name="emailjs-template-id"]')?.content;
+    
+    if (!serviceID || !templateID) {
+      console.error('EmailJS credentials missing', { serviceID, templateID });
+      document.getElementById('contactFeedback').innerHTML = '<div class="alert alert-danger">Configuration error. Please try again later.</div>';
+      return;
+    }
+    
     const templateParams = {
       from_name: this.name.value,
       from_email: this.email.value,
