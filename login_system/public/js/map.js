@@ -1,9 +1,9 @@
 var map;
-var userLocationMarker; 
-var locationButton; 
-var userLocation; 
-var watchId; 
-var studyLocations = []; 
+var userLocationMarker; // To track user's location marker
+var locationButton; // For custom location button
+var userLocation; // Store user's location for re-centering
+var watchId; // For tracking location updates
+var studyLocations = []; // Array to store study location markers
 
 // Initialize the map
 function initMap() {
@@ -33,7 +33,6 @@ function initMap() {
         fetchAndDisplayStudyLocations();
     });
     
-    // Try to get user's location
     if (navigator.geolocation) {
         const loadingDiv = document.createElement('div');
         loadingDiv.id = 'map-loading';
@@ -56,15 +55,13 @@ function initMap() {
                 const loadingElement = document.getElementById('map-loading');
                 if (loadingElement) loadingElement.remove();
                 
-                // Get user's position
                 var myLat = position.coords.latitude;
                 var myLong = position.coords.longitude;
                 userLocation = {lat: myLat, lng: myLong};
+                window.userLocation = userLocation;
                 
-                // Center map on user's location
                 map.setCenter(userLocation);
                 
-                // Add marker for user's location with custom marker icon
                 userLocationMarker = new google.maps.Marker({
                     position: userLocation,
                     map: map,
@@ -81,9 +78,6 @@ function initMap() {
                     zIndex: 999
                 });
                 
-                
-                
-                // Add info window
                 var infoWindow = new google.maps.InfoWindow({
                     content: '<h3 style="color:#4285F4;margin:0;">You are here!</h3>'
                 });
@@ -92,7 +86,6 @@ function initMap() {
                     infoWindow.open(map, userLocationMarker);
                 });
                 
-                // Enable watch position to update user's location in real-time
                 enableLocationTracking();
             },
             function failure() {
@@ -118,11 +111,8 @@ function initMap() {
                     if (errorElement) errorElement.remove();
                 }, 5000);
                 
-                // Use default location
                 var myLat = defaultLocation.lat;
                 var myLong = defaultLocation.lng;
-                
-                // Add marker for default location
                 addMarker({
                     location: {lat: myLat, lng: myLong}, 
                     content: `<h3>Default Location</h3>`
@@ -249,56 +239,28 @@ function addLocationButton() {
                 }, 1500);
             }
         } else {
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    userLocation = {
-                        lat: position.coords.latitude,
-                        lng: position.coords.longitude
-                    };
-                    map.panTo(userLocation);
-                    
-                    if (!userLocationMarker) {
-                        userLocationMarker = new google.maps.Marker({
-                            position: userLocation,
-                            map: map,
-                            icon: {
-                                path: google.maps.SymbolPath.CIRCLE,
-                                scale: 10,
-                                fillColor: "#4285F4",
-                                fillOpacity: 1,
-                                strokeColor: "#FFFFFF", 
-                                strokeWeight: 2
-                            },
-                            title: "Your Location"
-                        });
-                    } else {
-                        userLocationMarker.setPosition(userLocation);
-                    }
-                },
-                function(error) {
-                    const errorDiv = document.createElement('div');
-                    errorDiv.id = 'map-error';
-                    errorDiv.innerHTML = '<div>Could not access your location.</div>';
-                    errorDiv.style.position = 'absolute';
-                    errorDiv.style.zIndex = '1';
-                    errorDiv.style.bottom = '20px';
-                    errorDiv.style.left = '50%';
-                    errorDiv.style.transform = 'translateX(-50%)';
-                    errorDiv.style.background = 'rgba(255, 255, 255, 0.9)';
-                    errorDiv.style.padding = '10px 20px';
-                    errorDiv.style.borderRadius = '5px';
-                    errorDiv.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-                    document.getElementById('map').appendChild(errorDiv);
-                    
-                    setTimeout(() => {
-                        const errorElement = document.getElementById('map-error');
-                        if (errorElement) errorElement.remove();
-                    }, 3000);
-                }
-            );
+            const errorDiv = document.createElement('div');
+            errorDiv.id = 'map-error';
+            errorDiv.innerHTML = '<div>Location access is disabled. The map is using the default view.</div>';
+            errorDiv.style.position = 'absolute';
+            errorDiv.style.zIndex = '1';
+            errorDiv.style.bottom = '20px';
+            errorDiv.style.left = '50%';
+            errorDiv.style.transform = 'translateX(-50%)';
+            errorDiv.style.background = 'rgba(255, 255, 255, 0.9)';
+            errorDiv.style.padding = '10px 20px';
+            errorDiv.style.borderRadius = '5px';
+            errorDiv.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            document.getElementById('map').appendChild(errorDiv);
+            
+            setTimeout(() => {
+                const errorElement = document.getElementById('map-error');
+                if (errorElement) errorElement.remove();
+            }, 3000);
         }
     });
     
+    // Add the control to the map
     map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(locationControlDiv);
 }
 

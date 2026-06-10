@@ -10,12 +10,32 @@ const router = require('./router');
 
 
 // Database connection URI - use environment variable for production
-const uri = process.env.MONGODB_URI || `mongodb+srv://username:password@cluster.mongodb.net/Stroom`;
+// Import configuration based on environment
+const env = process.env.NODE_ENV || 'development';
+let config;
+try {
+    // Try to load config from project root
+    config = require('../config')[env];
+    console.log('Loaded config from project root');
+} catch (error) {
+    console.log('Failed to load config from project root:', error.message);
+    // Fallback to environment variables
+    config = {
+        PORT: process.env.PORT || 3001,
+        MONGODB_URI: process.env.MONGODB_URI,
+        SESSION_SECRET: process.env.SESSION_SECRET
+    };
+    console.log('Using fallback configuration');
+}
+
+// Use MongoDB URI from config
+const uri = config.MONGODB_URI;
 
 async function connect() {
     try {
+        console.log('Attempting to connect to MongoDB...');
         await mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-        console.log('Connected to the database');
+        console.log('Connected to the database successfully');
     } catch(error) {
         console.error('Database connection error: ', error);
     }
@@ -34,9 +54,13 @@ app.use(express.json());
 app.set('view engine', 'ejs');
 
 app.use(session({
-    secret: uuidv4(),
-    resave: false,
-    saveUninitialized: true
+    secret: config.SESSION_SECRET || uuidv4(),
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
 }));
 
 const noteSchema = {
