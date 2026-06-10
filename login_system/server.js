@@ -52,13 +52,17 @@ app.use(bodyparser.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.set('view engine', 'ejs');
-
+if (env === 'production') {
+    app.set('trust proxy', 1);
+}
 app.use(session({
     secret: config.SESSION_SECRET || uuidv4(),
     resave: true,
     saveUninitialized: true,
     cookie: {
         secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
+                sameSite: 'lax',
+
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
